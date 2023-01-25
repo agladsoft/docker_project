@@ -1,0 +1,418 @@
+version: "3.9"
+services:
+  nifi:
+    container_name: nifi_container
+    image: apache/nifi:latest
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      NIFI_WEB_HTTP_PORT: "8081"
+      XL_IDP_ROOT: ${XL_IDP_PATH_IMPORT}
+      XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_EXPORT}
+      XL_IDP_ROOT_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
+      XL_IDP_ROOT_VSK_EXPORT: ${XL_IDP_PATH_VSK_EXPORT}
+      XL_IDP_ROOT_NW_EXPORT: ${XL_IDP_PATH_NW_EXPORT}
+      XL_IDP_ROOT_NW_IMPORT: ${XL_IDP_PATH_NW_IMPORT}
+      XL_IDP_ROOT_FTS: ${XL_IDP_PATH_FTS}
+      XL_IDP_ROOT_REFERENCE_INN_BY_API: ${XL_IDP_PATH_REFERENCE_INN_BY_API}
+      XL_IDP_ROOT_REFERENCE: ${XL_IDP_PATH_REFERENCE}
+    volumes:
+      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+      - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
+      - ${XL_IDP_ROOT_VSK_EXPORT}:${XL_IDP_PATH_VSK_EXPORT}
+      - ${XL_IDP_ROOT_VSK_IMPORT}:${XL_IDP_PATH_VSK_IMPORT}
+      - ${XL_IDP_ROOT_NW_EXPORT}:${XL_IDP_PATH_NW_EXPORT}
+      - ${XL_IDP_ROOT_NW_IMPORT}:${XL_IDP_PATH_NW_IMPORT}
+      - ${XL_IDP_ROOT_FTS}:${XL_IDP_PATH_FTS}
+      - ${XL_IDP_ROOT_REFERENCE_INN_BY_API}:${XL_IDP_PATH_REFERENCE_INN_BY_API}
+      - ${XL_IDP_ROOT_REFERENCE}:${XL_IDP_PATH_REFERENCE}
+      - ./jdbc:/mnt/jdbc
+      - ./nifi-conf:/opt/nifi/nifi-current/conf
+    networks:
+      - postgres
+
+  postgres:
+    container_name: postgres_container
+    image: postgres:13.3
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=500"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=10GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=3600s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+      - "-c"
+      - "log_destination=csvlog"
+      - "-c"
+      - "logging_collector=on"
+      - "-c"
+      - "log_directory=pg_log"
+      - "-c"
+      - "log_filename=postgresql-%Y-%m-%d_%H%M%S.log"
+      - "-c"
+      - "log_statement=mod"
+      - "-c"
+      - "log_timezone=Europe/Moscow"
+      - "-c"
+      - "listen_addresses=*"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "wal_level=logical"
+    environment:
+      POSTGRES_DB: "marketing_db"
+      POSTGRES_USER: "marketing_admin"
+      POSTGRES_PASSWORD: "6QVnYsC4iSzz"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+      XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_FTS: ${XL_IDP_PATH_FTS}
+    volumes:
+      - ${XL_IDP_PATH_FTS_SCRIPTS}/bash_dir:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_FTS}:${XL_IDP_PATH_FTS}
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketing_admin -d marketing_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.7
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "marketing_admin@ruscon.com"
+      PGADMIN_DEFAULT_PASSWORD: "3hzDXfz8zaFC"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+      
+  clickhouse:
+    container_name: clickhouse_server
+    image: bitnami/clickhouse:latest
+    restart: always
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./clickhouse:/bitnami/clickhouse
+    environment:
+      - CLICKHOUSE_ADMIN_PASSWORD=6QVnYsC4iSzz
+    networks:
+      - postgres
+  
+  dbeaver:
+    image: dbeaver/cloudbeaver:22.3.2
+    container_name: dbeaver
+    restart: always
+    ports:
+      - "8121:8978"
+    volumes:
+      - ./workspace:/opt/cloudbeaver/workspace
+    networks:
+      - postgres
+  
+  liquibase:
+    image: liquibase/liquibase:4.18
+    container_name: liquibase_container
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./liquibase/changelog:/liquibase/changelog
+      - ./liquibase/materialized_views:/liquibase/materialized_views
+      - ./liquibase/views:/liquibase/views
+      - ./liquibase/cross_check:/liquibase/cross_check
+      - ./jdbc:/liquibase/drivers
+    command:
+      --classpath=/liquibase/changelog:/liquibase/drivers/liquibase-clickhouse-0.7.2-shaded.jar
+      --url=jdbc:clickhouse://clickhouse:8123/default?user=default&password=6QVnYsC4iSzz
+      --changeLogFile=changelog.xml update
+    networks:
+      - postgres
+      
+  lines_nutep:
+    container_name: lines_nutep
+    restart: always
+    ports:
+      - "8085:8085"
+    volumes:
+      - ${XL_IDP_PATH}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+    environment:
+      XL_IDP_ROOT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
+      XL_IMPORT_TERMINAL: nutep
+    build:
+      context: import
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nutep_lines.sh"
+    networks:
+      - postgres
+      
+  lines_nle:
+    container_name: lines_nle
+    restart: always
+    ports:
+      - "8086:8086"
+    volumes:
+      - ${XL_IDP_PATH}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+    environment:
+      XL_IDP_ROOT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
+      XL_IMPORT_TERMINAL: nle
+    build:
+      context: import
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nle_lines.sh"
+    networks:
+      - postgres
+
+  lines_nutep_export:
+    container_name: lines_nutep_export
+    restart: always
+    ports:
+      - "8090:8090"
+    volumes:
+      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
+    environment:
+      XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
+      XL_IMPORT_TERMINAL: nutep
+    build:
+      context: export
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nutep_lines.sh"
+    networks:
+      - postgres
+      
+  lines_nle_export:
+    container_name: lines_nle_export
+    restart: always
+    ports:
+      - "8091:8091"
+    volumes:
+      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
+    environment:
+      XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
+      XL_IMPORT_TERMINAL: nle
+    build:
+      context: export
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nle_lines.sh"
+    networks:
+      - postgres
+
+  vsk_export:
+    container_name: vsk_export
+    restart: always
+    ports:
+      - "8095:8095"
+    volumes:
+      - ${XL_IDP_PATH_VSK_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_VSK_EXPORT}:${XL_IDP_PATH_VSK_EXPORT}
+    environment:
+      XL_IDP_ROOT_VSK_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_VSK_EXPORT: ${XL_IDP_PATH_VSK_EXPORT}
+      XL_VSK_EXPORT: vsk
+    build:
+      context: export_vsk
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_export_vsk.sh"
+    networks:
+      - postgres
+      
+  vsk_import:
+    container_name: vsk_import
+    restart: always
+    ports:
+      - "8096:8096"
+    volumes:
+      - ${XL_IDP_PATH_VSK_IMPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_VSK_IMPORT}:${XL_IDP_PATH_VSK_IMPORT}
+    environment:
+      XL_IDP_ROOT_VSK_IMPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
+      XL_VSK_IMPORT: vsk
+    build:
+      context: import_vsk
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_import_vsk.sh"
+    networks:
+      - postgres
+
+  nw_import:
+    container_name: nw_import
+    restart: always
+    ports:
+      - "8097:8097"
+    volumes:
+      - ${XL_IDP_PATH_NW_IMPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_NW_IMPORT}:${XL_IDP_PATH_NW_IMPORT}
+    environment:
+      XL_IDP_ROOT_NW_IMPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_NW_IMPORT: ${XL_IDP_PATH_NW_IMPORT}
+      XL_NW_IMPORT: pkt
+    build:
+      context: import_nw
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_import_nw.sh"
+    networks:
+      - postgres
+
+  nw_export:
+    container_name: nw_export
+    restart: always
+    ports:
+      - "8098:8098"
+    volumes:
+      - ${XL_IDP_PATH_NW_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_NW_EXPORT}:${XL_IDP_PATH_NW_EXPORT}
+    environment:
+      XL_IDP_ROOT_NW_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_NW_EXPORT: ${XL_IDP_PATH_NW_EXPORT}
+      XL_NW_EXPORT: pkt
+    build:
+      context: export_nw
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_export_nw.sh"
+    networks:
+      - postgres
+  
+  fts:
+    container_name: fts
+    restart: always
+    ports:
+      - "8099:8099"
+    volumes:
+      - ${XL_IDP_PATH_FTS_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_FTS}:${XL_IDP_PATH_FTS}
+    environment:
+      XL_IDP_ROOT_FTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_FTS: ${XL_IDP_PATH_FTS}
+    build:
+      context: fts
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_fts.sh"
+    networks:
+      - postgres
+  
+  reference_inn_by_api:
+    container_name: reference_inn_by_api
+    restart: always
+    ports:
+      - "8070:8070"
+    volumes:
+      - ${XL_IDP_PATH_REFERENCE_INN_BY_API_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_REFERENCE_INN_BY_API}:${XL_IDP_PATH_REFERENCE_INN_BY_API}
+    environment:
+      XL_IDP_PATH_REFERENCE_INN_BY_API_SCRIPTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_REFERENCE_INN_BY_API: ${XL_IDP_PATH_REFERENCE_INN_BY_API}
+    build:
+      context: reference_inn_by_api
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_reference.sh"
+    networks:
+      - postgres
+
+  reference:
+    container_name: reference
+    restart: always
+    ports:
+      - "8087:8087"
+    volumes:
+      - ${XL_IDP_PATH_REFERENCE_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_REFERENCE}:${XL_IDP_PATH_REFERENCE}
+    environment:
+      XL_IDP_PATH_REFERENCE_SCRIPTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_REFERENCE: ${XL_IDP_PATH_REFERENCE}
+    build:
+      context: reference
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_reference.sh"
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
