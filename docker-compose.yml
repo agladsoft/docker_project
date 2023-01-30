@@ -83,6 +83,12 @@ services:
       - "max_replication_slots=10"
       - "-c"
       - "wal_level=logical"
+      - "c"
+      - "archive_mode=on"
+      - "c"
+      - "archive_command = 'test ! -f ${XL_IDP_ABSOLUTE_PATH}/database_archive/%f && cp %p ${XL_IDP_ABSOLUTE_PATH}/database_archive/%f'"
+      - "c"
+      - "restore_command = 'cp ${XL_IDP_ABSOLUTE_PATH}/database_archive/%f %p'"
     environment:
       POSTGRES_DB: "marketing_db"
       POSTGRES_USER: "marketing_admin"
