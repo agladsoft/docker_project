@@ -376,6 +376,27 @@ services:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_fts.sh"
     networks:
       - postgres
+
+  rzhd:
+    container_name: rzhd
+    restart: always
+    ports:
+      - "8099:8099"
+    volumes:
+      - ${XL_IDP_PATH_RZHD_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_RZHD}:${XL_IDP_PATH_RZHD}
+    environment:
+      XL_IDP_ROOT_RZHD: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_RZHD: ${XL_IDP_PATH_RZHD}
+    build:
+      context: rzhd
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_rzhd.sh"
+    networks:
+      - postgres
   
   reference_inn_by_api:
     container_name: reference_inn_by_api
