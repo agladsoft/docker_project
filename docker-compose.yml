@@ -189,8 +189,8 @@ services:
     networks:
       - postgres
 
-  lines_nutep:
-    container_name: lines_nutep
+  import_nutep:
+    container_name: import_nutep
     restart: always
     ports:
       - "8085:8085"
@@ -202,7 +202,7 @@ services:
       XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
       XL_IMPORT_TERMINAL: nutep
     build:
-      context: import
+      context: import_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -211,8 +211,8 @@ services:
     networks:
       - postgres
 
-  lines_nle:
-    container_name: lines_nle
+  import_nle:
+    container_name: import_nle
     restart: always
     ports:
       - "8086:8086"
@@ -224,7 +224,7 @@ services:
       XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
       XL_IMPORT_TERMINAL: nle
     build:
-      context: import
+      context: import_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -233,8 +233,8 @@ services:
     networks:
       - postgres
 
-  lines_nutep_export:
-    container_name: lines_nutep_export
+  export_nutep:
+    container_name: export_nutep
     restart: always
     ports:
       - "8090:8090"
@@ -246,7 +246,7 @@ services:
       XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
       XL_IMPORT_TERMINAL: nutep
     build:
-      context: export
+      context: export_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -255,8 +255,8 @@ services:
     networks:
       - postgres
 
-  lines_nle_export:
-    container_name: lines_nle_export
+  export_nle:
+    container_name: export_nle
     restart: always
     ports:
       - "8091:8091"
@@ -268,7 +268,7 @@ services:
       XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
       XL_IMPORT_TERMINAL: nle
     build:
-      context: export
+      context: export_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -290,7 +290,7 @@ services:
       XL_IDP_PATH_VSK_EXPORT: ${XL_IDP_PATH_VSK_EXPORT}
       XL_VSK_EXPORT: vsk
     build:
-      context: export_vsk
+      context: export_vsk_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -312,7 +312,7 @@ services:
       XL_IDP_PATH_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
       XL_VSK_IMPORT: vsk
     build:
-      context: import_vsk
+      context: import_vsk_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -334,7 +334,7 @@ services:
       XL_IDP_PATH_NW_IMPORT: ${XL_IDP_PATH_NW_IMPORT}
       XL_NW_IMPORT: pkt
     build:
-      context: import_nw
+      context: import_nw_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -356,7 +356,7 @@ services:
       XL_IDP_PATH_NW_EXPORT: ${XL_IDP_PATH_NW_EXPORT}
       XL_NW_EXPORT: pkt
     build:
-      context: export_nw
+      context: export_nw_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -377,7 +377,7 @@ services:
       XL_IDP_ROOT_FTS: ${XL_IDP_PATH_DOCKER}
       XL_IDP_PATH_FTS: ${XL_IDP_PATH_FTS}
     build:
-      context: fts
+      context: fts_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -398,7 +398,7 @@ services:
       XL_IDP_ROOT_RZHD: ${XL_IDP_PATH_DOCKER}
       XL_IDP_PATH_RZHD: ${XL_IDP_PATH_RZHD}
     build:
-      context: rzhd
+      context: rzhd_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
@@ -461,7 +461,7 @@ services:
       XL_IDP_PATH_REFERENCE_SCRIPTS: ${XL_IDP_PATH_DOCKER}
       XL_IDP_PATH_REFERENCE: ${XL_IDP_PATH_REFERENCE}
     build:
-      context: reference
+      context: reference_scripts
       dockerfile: ./Dockerfile
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
