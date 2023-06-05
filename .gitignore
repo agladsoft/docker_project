@@ -2,7 +2,7 @@
 reference_inn_by_api/.idea
 reference_inn_by_api/venv
 reference_inn/.idea
-reference_inn
+reference_inn/venv
 import_vsk/.idea
 import_vsk/venv
 import_nw/.idea
@@ -17,5 +17,6 @@ export_vsk/.idea
 export_vsk/venv
 fts/.idea
 fts/venv
+liquibase/.idea
 pgdata
 clickhouse
