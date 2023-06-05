@@ -15,6 +15,8 @@ services:
       XL_IDP_ROOT_NW_EXPORT: ${XL_IDP_PATH_NW_EXPORT}
       XL_IDP_ROOT_NW_IMPORT: ${XL_IDP_PATH_NW_IMPORT}
       XL_IDP_ROOT_FTS: ${XL_IDP_PATH_FTS}
+      XL_IDP_ROOT_RZHD: ${XL_IDP_PATH_RZHD}
+      XL_IDP_ROOT_CRM: ${XL_IDP_PATH_CRM}
       XL_IDP_ROOT_REFERENCE_INN_BY_API: ${XL_IDP_PATH_REFERENCE_INN_BY_API}
       XL_IDP_ROOT_REFERENCE: ${XL_IDP_PATH_REFERENCE}
     volumes:
@@ -25,6 +27,8 @@ services:
       - ${XL_IDP_ROOT_NW_EXPORT}:${XL_IDP_PATH_NW_EXPORT}
       - ${XL_IDP_ROOT_NW_IMPORT}:${XL_IDP_PATH_NW_IMPORT}
       - ${XL_IDP_ROOT_FTS}:${XL_IDP_PATH_FTS}
+      - ${XL_IDP_ROOT_RZHD}:${XL_IDP_PATH_RZHD}
+      - ${XL_IDP_ROOT_CRM}:${XL_IDP_PATH_CRM}
       - ${XL_IDP_ROOT_REFERENCE_INN_BY_API}:${XL_IDP_PATH_REFERENCE_INN_BY_API}
       - ${XL_IDP_ROOT_REFERENCE}:${XL_IDP_PATH_REFERENCE}
       - ./jdbc:/mnt/jdbc
@@ -35,6 +39,7 @@ services:
   postgres:
     container_name: postgres_container
     image: postgres:13.3
+    restart: always
     command:
       - "postgres"
       - "-c"
@@ -58,7 +63,7 @@ services:
       - "-c"
       - "lock_timeout=1s"
       - "-c"
-      - "statement_timeout=3600s"
+      - "statement_timeout=1200s"
       - "-c"
       - "shared_preload_libraries=pg_stat_statements"
       - "-c"
@@ -86,7 +91,7 @@ services:
       - "-c"
       - "archive_mode=on"
       - "-c"
-      - "archive_command='test ! -f ${XL_IDP_ABSOLUTE_PATH}/database_archive/%f && cp %p ${XL_IDP_ABSOLUTE_PATH}/database_archive/%f'"
+      - "archive_command='gzip < %p > ${XL_IDP_ABSOLUTE_PATH}/archivedir/%f.gz'"
       - "-c"
       - "restore_command='cp ${XL_IDP_ABSOLUTE_PATH}/database_archive/%f %p'"
     environment:
@@ -108,7 +113,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -136,20 +140,21 @@ services:
           memory: 1G
     networks:
       - postgres
-      
+
   clickhouse:
     container_name: clickhouse_server
-    image: bitnami/clickhouse:latest
+    image: bitnami/clickhouse:22.11.2
     restart: always
     ports:
       - "8123:8123"
     volumes:
       - ./clickhouse:/bitnami/clickhouse
     environment:
+      - CLICKHOUSE_ADMIN_USER=admin
       - CLICKHOUSE_ADMIN_PASSWORD=6QVnYsC4iSzz
     networks:
       - postgres
-  
+
   dbeaver:
     image: dbeaver/cloudbeaver:22.3.2
     container_name: dbeaver
@@ -160,7 +165,7 @@ services:
       - ./workspace:/opt/cloudbeaver/workspace
     networks:
       - postgres
-  
+
   liquibase:
     image: liquibase/liquibase:4.18
     container_name: liquibase_container
@@ -169,17 +174,21 @@ services:
         condition: service_healthy
     volumes:
       - ./liquibase/changelog:/liquibase/changelog
-      - ./liquibase/materialized_views:/liquibase/materialized_views
-      - ./liquibase/views:/liquibase/views
-      - ./liquibase/cross_check:/liquibase/cross_check
+      - ./liquibase/default/cross_check:/liquibase/default/cross_check
+      - ./liquibase/default/tables:/liquibase/default/tables
+      - ./liquibase/default/views:/liquibase/default/views
+      - ./liquibase/crm/tables:/liquibase/crm/tables
+      - ./liquibase/fts/tables:/liquibase/fts/tables
+      - ./liquibase/fts/views:/liquibase/fts/views
+      - ./liquibase/rzhd/tables:/liquibase/rzhd/tables
       - ./jdbc:/liquibase/drivers
     command:
       --classpath=/liquibase/changelog:/liquibase/drivers/liquibase-clickhouse-0.7.2-shaded.jar
-      --url=jdbc:clickhouse://clickhouse:8123/default?user=default&password=6QVnYsC4iSzz
+      --url=jdbc:clickhouse://clickhouse:8123/default?user=admin&password=6QVnYsC4iSzz
       --changeLogFile=changelog.xml update
     networks:
       - postgres
-      
+
   lines_nutep:
     container_name: lines_nutep
     restart: always
@@ -201,7 +210,7 @@ services:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nutep_lines.sh"
     networks:
       - postgres
-      
+
   lines_nle:
     container_name: lines_nle
     restart: always
@@ -245,7 +254,7 @@ services:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nutep_lines.sh"
     networks:
       - postgres
-      
+
   lines_nle_export:
     container_name: lines_nle_export
     restart: always
@@ -289,7 +298,7 @@ services:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_export_vsk.sh"
     networks:
       - postgres
-      
+
   vsk_import:
     container_name: vsk_import
     restart: always
@@ -355,7 +364,7 @@ services:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_export_nw.sh"
     networks:
       - postgres
-  
+
   fts:
     container_name: fts
     restart: always
@@ -381,7 +390,7 @@ services:
     container_name: rzhd
     restart: always
     ports:
-      - "8099:8099"
+      - "8100:8100"
     volumes:
       - ${XL_IDP_PATH_RZHD_SCRIPTS}:${XL_IDP_PATH_DOCKER}
       - ${XL_IDP_ROOT_RZHD}:${XL_IDP_PATH_RZHD}
@@ -395,6 +404,27 @@ services:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
     command:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_rzhd.sh"
+    networks:
+      - postgres
+
+  crm:
+    container_name: crm
+    restart: always
+    ports:
+      - "8101:8101"
+    volumes:
+      - ${XL_IDP_PATH_CRM_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_CRM}:${XL_IDP_PATH_CRM}
+    environment:
+      XL_IDP_ROOT_CRM: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_CRM: ${XL_IDP_PATH_CRM}
+    build:
+      context: crm
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_crm.sh"
     networks:
       - postgres
   
