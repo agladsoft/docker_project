@@ -277,8 +277,8 @@ services:
     networks:
       - postgres
 
-  vsk_export:
-    container_name: vsk_export
+  export_vsk:
+    container_name: export_vsk
     restart: always
     ports:
       - "8095:8095"
@@ -299,8 +299,8 @@ services:
     networks:
       - postgres
 
-  vsk_import:
-    container_name: vsk_import
+  import_vsk:
+    container_name: import_vsk
     restart: always
     ports:
       - "8096:8096"
@@ -321,8 +321,8 @@ services:
     networks:
       - postgres
 
-  nw_import:
-    container_name: nw_import
+  import_nw:
+    container_name: import_nw
     restart: always
     ports:
       - "8097:8097"
@@ -343,8 +343,8 @@ services:
     networks:
       - postgres
 
-  nw_export:
-    container_name: nw_export
+  export_nw:
+    container_name: export_nw
     restart: always
     ports:
       - "8098:8098"
