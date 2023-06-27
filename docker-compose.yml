@@ -156,7 +156,7 @@ services:
       - postgres
 
   dbeaver:
-    image: dbeaver/cloudbeaver:22.3.2
+    image: dbeaver/cloudbeaver:23.1.1
     container_name: dbeaver
     restart: always
     ports:
