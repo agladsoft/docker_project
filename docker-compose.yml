@@ -177,9 +177,12 @@ services:
       - ./liquibase/default/tables:/liquibase/default/tables
       - ./liquibase/default/views:/liquibase/default/views
       - ./liquibase/crm/tables:/liquibase/crm/tables
+      - ./liquibase/crm/views:/liquibase/crm/views
       - ./liquibase/fts/tables:/liquibase/fts/tables
       - ./liquibase/fts/views:/liquibase/fts/views
       - ./liquibase/rzhd/tables:/liquibase/rzhd/tables
+      - ./liquibase/rzhd/views:/liquibase/rzhd/views
+      - ./liquibase/rzhd/functions:/liquibase/rzhd/functions
       - ./jdbc:/liquibase/drivers
     command:
       --classpath=/liquibase/changelog:/liquibase/drivers/liquibase-clickhouse-0.7.2-shaded.jar
