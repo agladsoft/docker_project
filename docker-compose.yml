@@ -19,6 +19,7 @@ services:
       XL_IDP_ROOT_CRM: ${XL_IDP_PATH_CRM}
       XL_IDP_ROOT_REFERENCE_INN_BY_API: ${XL_IDP_PATH_REFERENCE_INN_BY_API}
       XL_IDP_ROOT_REFERENCE: ${XL_IDP_PATH_REFERENCE}
+      XL_IDP_ROOT_RABBITMQ: ${XL_IDP_PATH_RABBITMQ}
     volumes:
       - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
       - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
@@ -31,6 +32,7 @@ services:
       - ${XL_IDP_ROOT_CRM}:${XL_IDP_PATH_CRM}
       - ${XL_IDP_ROOT_REFERENCE_INN_BY_API}:${XL_IDP_PATH_REFERENCE_INN_BY_API}
       - ${XL_IDP_ROOT_REFERENCE}:${XL_IDP_PATH_REFERENCE}
+      - ${XL_IDP_ROOT_RABBITMQ}:${XL_IDP_PATH_RABBITMQ}
       - ./jdbc:/mnt/jdbc
       - ./nifi-conf:/opt/nifi/nifi-current/conf
     networks:
