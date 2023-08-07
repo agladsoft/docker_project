@@ -469,6 +469,27 @@ services:
     networks:
       - db
 
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "8150:8150"
+    volumes:
+      - ${XL_IDP_PATH_RABBITMQ_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_RABBITMQ}:${XL_IDP_PATH_RABBITMQ}
+    environment:
+      XL_IDP_ROOT_RABBITMQ: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_RABBITMQ: ${XL_IDP_PATH_RABBITMQ}
+    build:
+      context: RabbitMQ
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_rabbitmq.sh"
+    networks:
+      - db
+
 networks:
   db:
     driver: bridge
