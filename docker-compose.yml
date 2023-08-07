@@ -491,7 +491,7 @@ services:
       args:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_rabbitmq.sh"
+      bash -c "python3 ${XL_IDP_PATH_DOCKER}/scripts/receive.py"
     networks:
       - db
 
