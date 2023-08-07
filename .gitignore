@@ -20,3 +20,4 @@ fts/venv
 liquibase/.idea
 pgdata
 clickhouse
+.cache
