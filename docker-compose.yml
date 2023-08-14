@@ -431,7 +431,7 @@ services:
       bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_crm.sh"
     networks:
       - db
-  
+
   reference_inn_by_api:
     container_name: reference_inn_by_api
     restart: always
@@ -492,6 +492,23 @@ services:
         XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
     command:
       bash -c "python3 ${XL_IDP_PATH_DOCKER}/scripts/receive.py"
+    networks:
+      - db
+
+  service_inn:
+    container_name: service_inn
+    restart: always
+    ports:
+      - "8003:8003"
+    volumes:
+      - ${XL_IDP_PATH_SERVICE_INN_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+    build:
+      context: service_inn
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "python3 ${XL_IDP_PATH_DOCKER}/main.py"
     networks:
       - db
 
