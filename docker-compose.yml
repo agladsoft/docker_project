@@ -502,6 +502,8 @@ services:
       - "8003:8003"
     volumes:
       - ${XL_IDP_PATH_SERVICE_INN_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+    environment:
+      PATH_TO_DB: ${XL_IDP_PATH_DOCKER}
     build:
       context: service_inn
       dockerfile: ./Dockerfile
