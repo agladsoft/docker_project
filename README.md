@@ -29,7 +29,7 @@ or
 git clone --recurse-submodules https://github.com/agladsoft/docker_project.git
 ```
 
-## Getting started
+## Get started
 
 To start all containers use the command
 
@@ -84,5 +84,6 @@ to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
 ## License
+![alt text](https://seeklogo.com/images/M/MIT-logo-73A348B3DB-seeklogo.com.png)
 
 [MIT](https://choosealicense.com/licenses/mit/)
