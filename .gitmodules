@@ -1,0 +1,3 @@
+[submodule "import_scripts"]
+	path = import_scripts
+	url = https://github.com/agladsoft/import_scripts.git
