@@ -1,5 +1,7 @@
 # Projects for Marketing
 
+![docker-compose.png](docker-compose.png)
+
 ## Description
 
 These are projects for automating data loading into a single data storage system (sql database). 
@@ -9,6 +11,8 @@ The program runs on Ubuntu 20.04 or Ubuntu 22.04 operating systems.
 ## Installation
 
 Use the [docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04) to run projects for this program.
+
+![docker-image.png](docker-image.png)
 
 ```sh
 git clone https://github.com/agladsoft/docker_project.git
