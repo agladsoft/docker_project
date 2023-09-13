@@ -1,3 +1,45 @@
 [submodule "import_scripts"]
 	path = import_scripts
 	url = https://github.com/agladsoft/import_scripts.git
+[submodule "export_scripts"]
+	path = export_scripts
+	url = https://github.com/agladsoft/export_scripts.git
+[submodule "import_vsk_scripts"]
+	path = import_vsk_scripts
+	url = https://github.com/agladsoft/import_vsk_scripts.git
+[submodule "export_vsk_scripts"]
+	path = export_vsk_scripts
+	url = https://github.com/agladsoft/export_vsk_scripts.git
+[submodule "import_nw_scripts"]
+	path = import_nw_scripts
+	url = https://github.com/agladsoft/import_nw_scripts.git
+[submodule "export_nw_scripts"]
+	path = export_nw_scripts
+	url = https://github.com/agladsoft/export_nw_scripts.git
+[submodule "liquibase"]
+	path = liquibase
+	url = https://github.com/agladsoft/liquibase.git
+[submodule "service_inn"]
+	path = service_inn
+	url = https://github.com/agladsoft/service_inn.git
+[submodule "reference_inn_by_api"]
+	path = reference_inn_by_api
+	url = https://github.com/agladsoft/reference_inn_by_api.git
+[submodule "auto_tracking"]
+	path = auto_tracking
+	url = https://github.com/agladsoft/auto_tracking.git
+[submodule "reference_scripts"]
+	path = reference_scripts
+	url = https://github.com/agladsoft/reference_scripts.git
+[submodule "rzhd_scripts"]
+	path = rzhd_scripts
+	url = https://github.com/agladsoft/rzhd_scripts.git
+[submodule "structure_dirs"]
+	path = structure_dirs
+	url = https://github.com/agladsoft/structure_dirs.git
+[submodule "fts_scripts"]
+	path = fts_scripts
+	url = https://github.com/agladsoft/fts_scripts.git
+[submodule "crm"]
+	path = crm
+	url = https://github.com/agladsoft/crm.git
