@@ -90,4 +90,4 @@ Thanks to all contributors :heart:
 ## ⚖️ License
 ![alt text](https://seeklogo.com/images/M/MIT-logo-73A348B3DB-seeklogo.com.png)
 
-[MIT](https://choosealicense.com/licenses/mit/)
+This project is under the MIT License. See the [LICENSE](https://github.com/gogs/gogs/blob/main/LICENSE) file for the full license text.
