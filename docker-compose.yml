@@ -8,7 +8,7 @@ services:
       - "8081:8081"
     environment:
       NIFI_WEB_HTTP_PORT: "8081"
-      XL_IDP_ROOT: ${XL_IDP_PATH_IMPORT}
+      XL_IDP_ROOT_IMPORT: ${XL_IDP_PATH_IMPORT}
       XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_EXPORT}
       XL_IDP_ROOT_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
       XL_IDP_ROOT_VSK_EXPORT: ${XL_IDP_PATH_VSK_EXPORT}
@@ -21,7 +21,7 @@ services:
       XL_IDP_ROOT_REFERENCE: ${XL_IDP_PATH_REFERENCE}
       XL_IDP_ROOT_RABBITMQ: ${XL_IDP_PATH_RABBITMQ}
     volumes:
-      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+      - ${XL_IDP_ROOT_IMPORT}:${XL_IDP_PATH_IMPORT}
       - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
       - ${XL_IDP_ROOT_VSK_EXPORT}:${XL_IDP_PATH_VSK_EXPORT}
       - ${XL_IDP_ROOT_VSK_IMPORT}:${XL_IDP_PATH_VSK_IMPORT}
@@ -101,10 +101,10 @@ services:
       POSTGRES_USER: "marketing_admin"
       POSTGRES_PASSWORD: "6QVnYsC4iSzz"
       PGDATA: "/var/lib/postgresql/data/pgdata"
-      XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+      DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_FTS: ${XL_IDP_PATH_FTS}
     volumes:
-      - ${XL_IDP_PATH_FTS_SCRIPTS}/bash_dir:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_FTS_SCRIPTS}/bash_dir:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_FTS}:${XL_IDP_PATH_FTS}
       - .:/var/lib/postgresql/data
     ports:
@@ -199,19 +199,19 @@ services:
     ports:
       - "8085:8085"
     volumes:
-      - ${XL_IDP_PATH}:${XL_IDP_PATH_DOCKER}
-      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+      - ${XL_IDP_PATH_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${XL_IDP_ROOT_IMPORT}:${XL_IDP_PATH_IMPORT}
     environment:
-      XL_IDP_ROOT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
       XL_IMPORT_TERMINAL: nutep
     build:
       context: import_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nutep_lines.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/_nutep_lines.sh"
     networks:
       - db
 
@@ -221,19 +221,19 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - ${XL_IDP_PATH}:${XL_IDP_PATH_DOCKER}
-      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+      - ${XL_IDP_PATH_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${XL_IDP_ROOT_IMPORT}:${XL_IDP_PATH_IMPORT}
     environment:
-      XL_IDP_ROOT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
       XL_IMPORT_TERMINAL: nle
     build:
       context: import_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nle_lines.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/_nle_lines.sh"
     networks:
       - db
 
@@ -243,19 +243,19 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
     environment:
-      XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_EXPORT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
       XL_IMPORT_TERMINAL: nutep
     build:
       context: export_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nutep_lines.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/_nutep_lines.sh"
     networks:
       - db
 
@@ -265,19 +265,19 @@ services:
     ports:
       - "8091:8091"
     volumes:
-      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
     environment:
-      XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_EXPORT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
       XL_IMPORT_TERMINAL: nle
     build:
       context: export_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_nle_lines.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/_nle_lines.sh"
     networks:
       - db
 
@@ -287,19 +287,19 @@ services:
     ports:
       - "8095:8095"
     volumes:
-      - ${XL_IDP_PATH_VSK_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_VSK_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_VSK_EXPORT}:${XL_IDP_PATH_VSK_EXPORT}
     environment:
-      XL_IDP_ROOT_VSK_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_VSK_EXPORT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_VSK_EXPORT: ${XL_IDP_PATH_VSK_EXPORT}
       XL_VSK_EXPORT: vsk
     build:
       context: export_vsk_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_export_vsk.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/run_export_vsk.sh"
     networks:
       - db
 
@@ -309,19 +309,19 @@ services:
     ports:
       - "8096:8096"
     volumes:
-      - ${XL_IDP_PATH_VSK_IMPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_VSK_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_VSK_IMPORT}:${XL_IDP_PATH_VSK_IMPORT}
     environment:
-      XL_IDP_ROOT_VSK_IMPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_VSK_IMPORT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
       XL_VSK_IMPORT: vsk
     build:
       context: import_vsk_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_import_vsk.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/run_import_vsk.sh"
     networks:
       - db
 
@@ -331,19 +331,19 @@ services:
     ports:
       - "8097:8097"
     volumes:
-      - ${XL_IDP_PATH_NW_IMPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_NW_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_NW_IMPORT}:${XL_IDP_PATH_NW_IMPORT}
     environment:
-      XL_IDP_ROOT_NW_IMPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_NW_IMPORT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_NW_IMPORT: ${XL_IDP_PATH_NW_IMPORT}
       XL_NW_IMPORT: pkt
     build:
       context: import_nw_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_import_nw.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/run_import_nw.sh"
     networks:
       - db
 
@@ -353,19 +353,19 @@ services:
     ports:
       - "8098:8098"
     volumes:
-      - ${XL_IDP_PATH_NW_EXPORT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_NW_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_NW_EXPORT}:${XL_IDP_PATH_NW_EXPORT}
     environment:
-      XL_IDP_ROOT_NW_EXPORT: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_NW_EXPORT: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_NW_EXPORT: ${XL_IDP_PATH_NW_EXPORT}
       XL_NW_EXPORT: pkt
     build:
       context: export_nw_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_export_nw.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/run_export_nw.sh"
     networks:
       - db
 
@@ -375,18 +375,18 @@ services:
     ports:
       - "8099:8099"
     volumes:
-      - ${XL_IDP_PATH_FTS_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_FTS_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_FTS}:${XL_IDP_PATH_FTS}
     environment:
-      XL_IDP_ROOT_FTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_FTS: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_FTS: ${XL_IDP_PATH_FTS}
     build:
       context: fts_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/run_fts.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/run_fts.sh"
     networks:
       - db
 
@@ -396,18 +396,18 @@ services:
     ports:
       - "8100:8100"
     volumes:
-      - ${XL_IDP_PATH_RZHD_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_RZHD_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_RZHD}:${XL_IDP_PATH_RZHD}
     environment:
-      XL_IDP_ROOT_RZHD: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_RZHD: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_RZHD: ${XL_IDP_PATH_RZHD}
     build:
       context: rzhd_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_rzhd.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash/run_rzhd.sh"
     networks:
       - db
 
@@ -417,18 +417,18 @@ services:
     ports:
       - "8101:8101"
     volumes:
-      - ${XL_IDP_PATH_CRM_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_CRM_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_CRM}:${XL_IDP_PATH_CRM}
     environment:
-      XL_IDP_ROOT_CRM: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_CRM: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_CRM: ${XL_IDP_PATH_CRM}
     build:
       context: crm
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_crm.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash/run_crm.sh"
     networks:
       - db
 
@@ -438,18 +438,18 @@ services:
     ports:
       - "8070:8070"
     volumes:
-      - ${XL_IDP_PATH_REFERENCE_INN_BY_API_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_REFERENCE_INN_BY_API_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_REFERENCE_INN_BY_API}:${XL_IDP_PATH_REFERENCE_INN_BY_API}
     environment:
-      XL_IDP_PATH_REFERENCE_INN_BY_API_SCRIPTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_REFERENCE_INN_BY_API_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_REFERENCE_INN_BY_API: ${XL_IDP_PATH_REFERENCE_INN_BY_API}
     build:
       context: reference_inn_by_api
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_reference.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/_reference.sh"
     networks:
       - db
 
@@ -459,18 +459,18 @@ services:
     ports:
       - "8087:8087"
     volumes:
-      - ${XL_IDP_PATH_REFERENCE_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_REFERENCE_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_REFERENCE}:${XL_IDP_PATH_REFERENCE}
     environment:
-      XL_IDP_PATH_REFERENCE_SCRIPTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_REFERENCE_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_REFERENCE: ${XL_IDP_PATH_REFERENCE}
     build:
       context: reference_scripts
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash_dir/_reference.sh"
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/_reference.sh"
     networks:
       - db
 
@@ -480,18 +480,18 @@ services:
     ports:
       - "8150:8150"
     volumes:
-      - ${XL_IDP_PATH_RABBITMQ_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_RABBITMQ_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
       - ${XL_IDP_ROOT_RABBITMQ}:${XL_IDP_PATH_RABBITMQ}
     environment:
-      XL_IDP_ROOT_RABBITMQ: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_RABBITMQ: ${DOCKER_PATH_SCRIPTS}
       XL_IDP_PATH_RABBITMQ: ${XL_IDP_PATH_RABBITMQ}
     build:
       context: RabbitMQ
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "python3 ${XL_IDP_PATH_DOCKER}/scripts/receive.py"
+      bash -c "python3 ${DOCKER_PATH_SCRIPTS}/scripts/receive.py"
     networks:
       - db
 
@@ -501,16 +501,16 @@ services:
     ports:
       - "8003:8003"
     volumes:
-      - ${XL_IDP_PATH_SERVICE_INN_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_PATH_SERVICE_INN_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
     environment:
-      PATH_TO_DB: ${XL_IDP_PATH_DOCKER}
+      PATH_TO_DB: ${DOCKER_PATH_SCRIPTS}
     build:
       context: service_inn
       dockerfile: ./Dockerfile
       args:
-        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+        DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
-      bash -c "python3 ${XL_IDP_PATH_DOCKER}/main.py"
+      bash -c "python3 ${DOCKER_PATH_SCRIPTS}/main.py"
     networks:
       - db
 
