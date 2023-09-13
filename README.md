@@ -29,7 +29,7 @@ or
 git clone --recurse-submodules https://github.com/agladsoft/docker_project.git
 ```
 
-## Get started
+## 💻 Get started
 
 To start all containers use the command
 
