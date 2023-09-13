@@ -1,4 +1,4 @@
-# 🔮 Projects for Marketing
+# Projects for Marketing
 
 ![docker-compose.png](docker-compose.png)
 
