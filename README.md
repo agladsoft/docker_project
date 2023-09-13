@@ -11,23 +11,23 @@ The program runs on Ubuntu 20.04 or Ubuntu 22.04 operating systems.
 Use the [docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04) to run projects for this program.
 
 ```sh
-$ git clone https://github.com/agladsoft/docker_project.git
+git clone https://github.com/agladsoft/docker_project.git
 
-$ git submodule init
+git submodule init
 
-$ git submodule update
+git submodule update
 ```
 
 or
 
 ```sh
-$ git clone --recurse-submodules https://github.com/agladsoft/docker_project.git
+git clone --recurse-submodules https://github.com/agladsoft/docker_project.git
 ```
 
 Next
 
 ```sh
-$ sudo docker-compose up
+sudo docker-compose up
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ $ sudo docker-compose up
 To check that all projects are running, use the command
 
 ```sh
-$ sudo docker container ls -a
+sudo docker container ls -a
 ```
 
 ## Contributing
