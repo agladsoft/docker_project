@@ -18,6 +18,8 @@ Use the [docker](https://www.digitalocean.com/community/tutorials/how-to-install
 ```sh
 git clone https://github.com/agladsoft/docker_project.git
 
+cd docker_project
+
 git submodule init
 
 git submodule update
@@ -27,6 +29,8 @@ or
 
 ```sh
 git clone --recurse-submodules https://github.com/agladsoft/docker_project.git
+
+cd docker_project
 ```
 
 ## 💻 Get started
