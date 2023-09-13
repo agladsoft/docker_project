@@ -1,14 +1,14 @@
-# Projects for Marketing
+# 🔮 Projects for Marketing
 
 ![docker-compose.png](docker-compose.png)
 
-## Description
+## 📡 Description
 
 These are projects for automating data loading into a single data storage system (sql database). 
 
 The program runs on Ubuntu 20.04 or Ubuntu 22.04 operating systems.
 
-## Installation
+## 📜 Installation
 
 ![docker-image.png](docker-image.png)
 
@@ -68,7 +68,7 @@ To recreate one container, use the command
 sudo docker-compose up --force-recreate --no-deps --build `container_name`
 ```
 
-## Usage
+## 🙇‍♂️ Usage
 
 To check that all projects are running, use the command
 
@@ -76,14 +76,14 @@ To check that all projects are running, use the command
 sudo docker container ls -a
 ```
 
-## Contributing
+## 👋 Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
-## License
+## ⚖️ License
 ![alt text](https://seeklogo.com/images/M/MIT-logo-73A348B3DB-seeklogo.com.png)
 
 [MIT](https://choosealicense.com/licenses/mit/)
