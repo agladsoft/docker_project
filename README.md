@@ -78,10 +78,14 @@ sudo docker container ls -a
 
 ## 👋 Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+Please check out the [Contributing to RATH guide](https://docs.kanaries.net/community/contribution-guide)
+for guidelines about how to proceed.
 
-Please make sure to update tests as appropriate.
+Thanks to all contributors :heart:
+
+<a href="https://github.com/agladsoft/docker_project/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=agladsoft/docker_project" />
+</a>
 
 ## ⚖️ License
 ![alt text](https://seeklogo.com/images/M/MIT-logo-73A348B3DB-seeklogo.com.png)
