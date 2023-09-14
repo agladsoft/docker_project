@@ -43,3 +43,15 @@
 [submodule "crm"]
 	path = crm
 	url = https://github.com/agladsoft/crm.git
+[submodule "RabbitMQ"]
+	path = RabbitMQ
+	url = https://github.com/agladsoft/RabbitMQ.git
+[submodule "ServiceConsignment"]
+	path = ServiceConsignment
+	url = https://github.com/agladsoft/ServiceConsignment.git
+[submodule "Morservice"]
+	path = Morservice
+	url = https://github.com/agladsoft/Morservice.git
+[submodule "Morservice_parsed"]
+	path = Morservice_parsed
+	url = https://github.com/agladsoft/Morservice_parsed.git

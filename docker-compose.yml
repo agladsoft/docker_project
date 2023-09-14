@@ -8,8 +8,8 @@ services:
       - "8081:8081"
     environment:
       NIFI_WEB_HTTP_PORT: "8081"
-      XL_IDP_ROOT_IMPORT: ${XL_IDP_PATH_IMPORT}
-      XL_IDP_ROOT_EXPORT: ${XL_IDP_PATH_EXPORT}
+      XL_IDP_ROOT_IMPORT: ${DOCKER_PATH_IMPORT_FILES}
+      XL_IDP_ROOT_EXPORT: ${DOCKER_PATH_EXPORT_FILES}
       XL_IDP_ROOT_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
       XL_IDP_ROOT_VSK_EXPORT: ${XL_IDP_PATH_VSK_EXPORT}
       XL_IDP_ROOT_NW_EXPORT: ${XL_IDP_PATH_NW_EXPORT}
@@ -21,8 +21,8 @@ services:
       XL_IDP_ROOT_REFERENCE: ${XL_IDP_PATH_REFERENCE}
       XL_IDP_ROOT_RABBITMQ: ${XL_IDP_PATH_RABBITMQ}
     volumes:
-      - ${XL_IDP_ROOT_IMPORT}:${XL_IDP_PATH_IMPORT}
-      - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
+      - ${LOCAL_PATH_IMPORT_FILES}:${DOCKER_PATH_IMPORT_FILES}
+      - ${LOCAL_PATH_EXPORT_FILES}:${DOCKER_PATH_EXPORT_FILES}
       - ${XL_IDP_ROOT_VSK_EXPORT}:${XL_IDP_PATH_VSK_EXPORT}
       - ${XL_IDP_ROOT_VSK_IMPORT}:${XL_IDP_PATH_VSK_IMPORT}
       - ${XL_IDP_ROOT_NW_EXPORT}:${XL_IDP_PATH_NW_EXPORT}
@@ -199,11 +199,11 @@ services:
     ports:
       - "8085:8085"
     volumes:
-      - ${XL_IDP_PATH_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
-      - ${XL_IDP_ROOT_IMPORT}:${XL_IDP_PATH_IMPORT}
+      - ${LOCAL_PATH_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${LOCAL_PATH_IMPORT_FILES}:${DOCKER_PATH_IMPORT_FILES}
     environment:
       XL_IDP_ROOT: ${DOCKER_PATH_SCRIPTS}
-      XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
+      XL_IDP_PATH_IMPORT: ${DOCKER_PATH_IMPORT_FILES}
       XL_IMPORT_TERMINAL: nutep
     build:
       context: import_scripts
@@ -221,11 +221,11 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - ${XL_IDP_PATH_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
-      - ${XL_IDP_ROOT_IMPORT}:${XL_IDP_PATH_IMPORT}
+      - ${LOCAL_PATH_IMPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${LOCAL_PATH_IMPORT_FILES}:${DOCKER_PATH_IMPORT_FILES}
     environment:
       XL_IDP_ROOT: ${DOCKER_PATH_SCRIPTS}
-      XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
+      XL_IDP_PATH_IMPORT: ${DOCKER_PATH_IMPORT_FILES}
       XL_IMPORT_TERMINAL: nle
     build:
       context: import_scripts
@@ -243,11 +243,11 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
-      - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
+      - ${LOCAL_PATH_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${LOCAL_PATH_EXPORT_FILES}:${DOCKER_PATH_EXPORT_FILES}
     environment:
       XL_IDP_ROOT_EXPORT: ${DOCKER_PATH_SCRIPTS}
-      XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
+      XL_IDP_PATH_EXPORT: ${DOCKER_PATH_EXPORT_FILES}
       XL_IMPORT_TERMINAL: nutep
     build:
       context: export_scripts
@@ -265,11 +265,11 @@ services:
     ports:
       - "8091:8091"
     volumes:
-      - ${XL_IDP_PATH_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
-      - ${XL_IDP_ROOT_EXPORT}:${XL_IDP_PATH_EXPORT}
+      - ${LOCAL_PATH_EXPORT_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${LOCAL_PATH_EXPORT_FILES}:${DOCKER_PATH_EXPORT_FILES}
     environment:
       XL_IDP_ROOT_EXPORT: ${DOCKER_PATH_SCRIPTS}
-      XL_IDP_PATH_EXPORT: ${XL_IDP_PATH_EXPORT}
+      XL_IDP_PATH_EXPORT: ${DOCKER_PATH_EXPORT_FILES}
       XL_IMPORT_TERMINAL: nle
     build:
       context: export_scripts
@@ -511,6 +511,90 @@ services:
         DOCKER_PATH_SCRIPTS: ${DOCKER_PATH_SCRIPTS}
     command:
       bash -c "python3 ${DOCKER_PATH_SCRIPTS}/main.py"
+    networks:
+      - db
+
+  service_consignment:
+    container_name: service_consignment
+    restart: always
+    ports:
+      - "8004:8004"
+    volumes:
+      - ${XL_IDP_PATH_SERVICE_CONSIGNMENT_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+    environment:
+      PATH_TO_DB: ${XL_IDP_PATH_DOCKER}
+    build:
+      context: ServiceConsignment
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "python3 ${XL_IDP_PATH_DOCKER}/main.py"
+    networks:
+      - db
+
+  service_mor:
+    container_name: service_mor
+    restart: always
+    ports:
+      - "8005:8005"
+    volumes:
+      - ${XL_IDP_PATH_MORSERVICE_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+    environment:
+      XL_IDP_PATH_MORSERVICE: ${XL_IDP_PATH_DOCKER}
+    build:
+      context: Morservice
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run.sh"
+    networks:
+      - db
+
+  service_parsed:
+    container_name: service_parsed
+    restart: always
+    ports:
+      - "8006:8006"
+    volumes:
+      - ${XL_IDP_PATH_MORSERVICE_PARSED_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_MORSERVICE_PARSED}:${XL_IDP_PATH_MORSERVICE_PARSED}
+    environment:
+      XL_IDP_PATH_MORSERVICE_PARSED_SCRIPTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_ROOT_MORSERVICE_PARSED: ${XL_IDP_PATH_MORSERVICE_PARSED}
+    build:
+      context: Morservice_parsed
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run.sh"
+    networks:
+      - db
+
+  auto_tracking:
+    container_name: auto_tracking
+    restart: always
+    ports:
+      - "8011:8011"
+    volumes:
+      - ${XL_IDP_PATH_AUTO_TRACKING_SCRIPTS}:${XL_IDP_PATH_DOCKER}
+      - ${XL_IDP_ROOT_AUTO_TRACKING}:${XL_IDP_PATH_AUTO_TRACKING}
+      - ${XL_IDP_ROOT}:${XL_IDP_PATH_IMPORT}
+      - ${XL_IDP_ROOT_VSK_IMPORT}:${XL_IDP_PATH_VSK_IMPORT}
+    environment:
+      XL_IDP_PATH_AUTO_TRACKING_SCRIPTS: ${XL_IDP_PATH_DOCKER}
+      XL_IDP_PATH_AUTO_TRACKING: ${XL_IDP_PATH_AUTO_TRACKING}
+      XL_IDP_PATH_IMPORT: ${XL_IDP_PATH_IMPORT}
+      XL_IDP_PATH_VSK_IMPORT: ${XL_IDP_PATH_VSK_IMPORT}
+    build:
+      context: auto_tracking
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${XL_IDP_PATH_DOCKER}/bash/run_auto_tracking.sh"
     networks:
       - db
 
