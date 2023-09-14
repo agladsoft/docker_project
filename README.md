@@ -35,7 +35,7 @@ cd docker_project
 
 ## 💻 Get started
 
-To restore the project structure, you need to run `main.py` in the `structure_dirs` project. But before that, specify the path where all folders will be stored in `__init__.py` the `root_directory` variable.
+#### To restore the project structure, you need to run `main.py` in the `structure_dirs` project. But before that, specify the path where all folders will be stored in `__init__.py` the `root_directory` variable.
 
 ```sh
 cd structure_dirs
@@ -45,38 +45,44 @@ sudo nano __init__.py # change path in `root_directory` variable.
 python3 main.py
 ```
 
-To start all containers use the command
+or
+
+```sh
+sudo docker-compose up structure_dirs
+```
+
+#### To start all containers use the command
 
 ```sh
 sudo docker-compose up
 ```
 
-To delete all containers use the command
+#### To delete all containers use the command
 
 ```sh
 sudo docker-compose down
 ```
 
-To launch a single container, use the command
+#### To launch a single container, use the command
 
 ```sh
 sudo docker-compose up `container_name`
 ```
 
-To delete one container, use the command
+#### To delete one container, use the command
 
 ```sh
 sudo docker-compose stop `container_name`
 sudo docker-compose rm `container_name`
 ```
 
-To restart one container, use the command
+#### To restart one container, use the command
 
 ```sh
 sudo docker-compose restart `container_name`
 ```
 
-To recreate one container, use the command
+#### To recreate one container, use the command
 
 ```sh
 sudo docker-compose up --force-recreate --no-deps --build `container_name`
