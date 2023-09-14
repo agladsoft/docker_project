@@ -10,7 +10,7 @@ The program runs on Ubuntu 20.04 or Ubuntu 22.04 operating systems.
 
 ## 📜 Installation
 
-![docker-image.png](docker-image.png)
+![alt text](https://logos-world.net/wp-content/uploads/2021/02/Docker-Symbol.png)
 
 Use the [docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04) to run projects for this program.
 
