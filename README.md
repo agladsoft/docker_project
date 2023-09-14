@@ -35,6 +35,16 @@ cd docker_project
 
 ## 💻 Get started
 
+To restore the project structure, you need to run `main.py` in the `structure_dirs` project. But before that, specify the path where all folders will be stored in `__init__.py` the `root_directory` variable.
+
+```sh
+cd structure_dirs
+
+sudo nano __init__.py
+
+python3 main.py
+```
+
 To start all containers use the command
 
 ```sh
