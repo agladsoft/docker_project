@@ -1,7 +1,6 @@
 # Projects for Marketing
 
 ![docker-compose.png](docker-compose.png)
-<img src="docker-compose.png" width="2000" height="200" />
 
 ## 📡 Description
 
