@@ -40,7 +40,7 @@ To restore the project structure, you need to run `main.py` in the `structure_di
 ```sh
 cd structure_dirs
 
-sudo nano __init__.py
+sudo nano __init__.py # change path in `root_directory` variable.
 
 python3 main.py
 ```
