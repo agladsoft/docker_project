@@ -34,9 +34,6 @@
 [submodule "rzhd_scripts"]
 	path = rzhd_scripts
 	url = https://github.com/agladsoft/rzhd_scripts.git
-[submodule "structure_dirs"]
-	path = structure_dirs
-	url = https://github.com/agladsoft/structure_dirs.git
 [submodule "fts_scripts"]
 	path = fts_scripts
 	url = https://github.com/agladsoft/fts_scripts.git
@@ -55,3 +52,6 @@
 [submodule "Morservice_parsed"]
 	path = Morservice_parsed
 	url = https://github.com/agladsoft/Morservice_parsed.git
+[submodule "structure_dirs"]
+	path = structure_dirs
+	url = https://github.com/agladsoft/structure_dirs.git
