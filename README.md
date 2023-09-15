@@ -41,19 +41,12 @@ The variable is called `LOCAL_ABSOLUTE_PATH_FILES`
 
 After changing the path of the variable, you need to run the container in docker to restore the project structure.
 
-```sh
-sudo docker-compose up structure_dirs
-```
 
-or
+| Method     | Command                                                  |
+|:-----------|:---------------------------------------------------------|
+| **docker** | `sudo docker-compose up structure_dirs`                  |
+| **bash**   | `cd structure_dirs` <br/> `sudo nano __init__.py` <br/> `python3 main.py` |
 
-```sh
-cd structure_dirs
-
-sudo nano __init__.py # change the path in the `root_directory` variable to the path specified in the `.env` file of the `LOCAL_ABSOLUTE_PATH_FILES` variable.
-
-python3 main.py
-```
 
 To start all containers use the command
 
