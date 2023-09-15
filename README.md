@@ -95,9 +95,6 @@ sudo docker container ls -a
 
 ## 👋 Contributing
 
-Please check out the [Contributing to RATH guide](https://docs.kanaries.net/community/contribution-guide)
-for guidelines about how to proceed.
-
 Thanks to all contributors :heart:
 
 <a href="https://github.com/agladsoft/docker_project/graphs/contributors">
