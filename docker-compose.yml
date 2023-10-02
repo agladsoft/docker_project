@@ -89,6 +89,7 @@ services:
       - ./liquibase/changelog:/liquibase/changelog
       - ./liquibase/default/cross_check:/liquibase/default/cross_check
       - ./liquibase/default/tables:/liquibase/default/tables
+      - ./liquibase/default/count_spardeck:/liquibase/default/count_spardeck
       - ./liquibase/default/views:/liquibase/default/views
       - ./liquibase/crm/tables:/liquibase/crm/tables
       - ./liquibase/crm/views:/liquibase/crm/views
