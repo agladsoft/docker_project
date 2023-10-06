@@ -503,6 +503,7 @@ services:
       XL_IDP_PATH_VSK_IMPORT: ${DOCKER_PATH_VSK_IMPORT_FILES}
       XL_IDP_PATH_EXPORT: ${DOCKER_PATH_EXPORT_FILES}
       XL_IDP_PATH_VSK_EXPORT: ${DOCKER_PATH_VSK_EXPORT_FILES}
+      XL_IDP_PATH_NW_EXPORT: ${DOCKER_PATH_NW_EXPORT_FILES}
     build:
       context: auto_tracking
       dockerfile: ./Dockerfile
