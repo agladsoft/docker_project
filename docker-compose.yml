@@ -517,6 +517,27 @@ services:
     networks:
       - db
 
+  production_industry:
+    container_name: production_industry
+    restart: always
+    ports:
+      - "8015:8015"
+    volumes:
+      - ${LOCAL_PATH_PRODUCTION_INDUSTRY_SCRIPTS}:${DOCKER_PATH_SCRIPTS}
+      - ${LOCAL_PATH_PRODUCTION_INDUSTRY_FILES}:${DOCKER_PATH_PRODUCTION_INDUSTRY_FILES}
+    environment:
+      XL_IDP_ROOT_PRODUCTION_INDUSTRY: ${DOCKER_PATH_SCRIPTS}
+      XL_IDP_PATH_PRODUCTION_INDUSTRY: ${DOCKER_PATH_PRODUCTION_INDUSTRY_FILES}
+    build:
+      context: production_industry
+      dockerfile: ./Dockerfile
+      args:
+        XL_IDP_PATH_DOCKER: ${XL_IDP_PATH_DOCKER}
+    command:
+      bash -c "sh ${DOCKER_PATH_SCRIPTS}/bash_dir/run_production_industry.sh"
+    networks:
+      - db
+
 networks:
   db:
     driver: bridge

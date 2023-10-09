@@ -55,3 +55,6 @@
 [submodule "structure_dirs"]
 	path = structure_dirs
 	url = https://github.com/agladsoft/structure_dirs.git
+[submodule "production_industry"]
+	path = production_industry
+	url = https://github.com/agladsoft/production_industry.git
